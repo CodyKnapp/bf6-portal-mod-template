@@ -1,8 +1,8 @@
-import { ExampleGameMode } from './GameModes/Example/ExampleGameMode'
+import { FulcrumProtocol } from './GameModes/Experiment/FulcrumProtocol';
 
 // Create the active game mode instance
 
-export const gameMode = new ExampleGameMode()
+export const gameMode = new FulcrumProtocol()
 
 /* ------------------------------------------------------------
  *  ENGINE EVENTS -> Redirect to GameMode instance
