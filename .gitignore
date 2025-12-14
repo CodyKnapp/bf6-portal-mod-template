@@ -22,3 +22,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+__SCRIPT.ts
+__STRINGS.json

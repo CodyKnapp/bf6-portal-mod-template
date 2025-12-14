@@ -1,17 +1,16 @@
-import {Core_AGameMode} from '../../Core/AGameMode';
-import * as modlib from 'modlib';
-import CapturePoint = mod.CapturePoint;
-import Team = mod.Team;
-import ScoreboardType = mod.ScoreboardType;
+import { Core_AGameMode } from '../../Core/AGameMode';
 import { TeamWrapper } from '../../Core/TeamWrapper';
-import {CapturePointWrapper} from "../../Core/CapturePointWrapper";
+import { CapturePointWrapper } from "../../Core/CapturePointWrapper";
+import CapturePoint = mod.CapturePoint;
+import ScoreboardType = mod.ScoreboardType;
 
 export class FulcrumProtocol extends Core_AGameMode {
   private readonly FULCRUM_ID = 601;
-  private capturePoints: CapturePointWrapper[];
-  private teams: TeamWrapper[];
+  private capturePoints: CapturePointWrapper[] = [];
+  private teams: TeamWrapper[] = [];
 
   onGameModeStarted(): void {
+    mod.SetGameModeTargetScore(1000); // High enough that no one will achieve it
     this.initializeObjectives();
     this.initializeScoreboard();
     this.initializeTeams();
@@ -20,6 +19,10 @@ export class FulcrumProtocol extends Core_AGameMode {
   onPlayerDeployed(eventPlayer: mod.Player) {
     const playerTeam = this.teams.find(team => team.isPlayerOnTeam(eventPlayer));
     const otherTeam = this.teams.find(team => !team.isPlayerOnTeam(eventPlayer));
+    if (!playerTeam || !otherTeam) {
+      console.log(`Error: a team is undefined! Player: ${playerTeam} || Other: ${otherTeam}`);
+      return;
+    }
 
     if (otherTeam.isFulcrumHolder) {
       playerTeam.decrease(otherTeam.zoneCount());
@@ -55,9 +58,17 @@ export class FulcrumProtocol extends Core_AGameMode {
   private changePointControl(point: CapturePoint, controlFunction: (team: TeamWrapper, point: CapturePointWrapper) => void) {
     const pointId = mod.GetObjId(point);
     const pointWrapper = this.capturePoints.find(point => point.capturePointId == pointId);
+    if (!pointWrapper) {
+      console.log(`Error: capture point not found for ID: ${pointId}`);
+      return;
+    }
 
     const capturingTeamId = mod.GetObjId(mod.GetCurrentOwnerTeam(point));
     const teamWrapper = this.teams.find(team => team.teamId == capturingTeamId);
+    if (!teamWrapper) {
+      console.log(`Error: team not found in changePointControl for team ID: ${capturingTeamId}`);
+      return;
+    }
     controlFunction(teamWrapper, pointWrapper);
   }
 }

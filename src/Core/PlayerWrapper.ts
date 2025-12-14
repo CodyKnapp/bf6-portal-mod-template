@@ -1,11 +1,10 @@
-import Player = mod.Player;
 import * as modlib from 'modlib';
 
 export class PlayerWrapper {
   public readonly playerId: number;
-  private readonly player: Player;
+  private readonly player: mod.Player;
 
-  constructor(player: Player) {
+  constructor(player: mod.Player) {
     this.player = player;
     this.playerId = modlib.getPlayerId(player);
   }

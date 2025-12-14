@@ -1,23 +1,21 @@
-import Team = mod.Team;
-import Player = mod.Player;
 import * as modlib from 'modlib';
 import {PlayerWrapper} from "./PlayerWrapper";
 import {CapturePointWrapper} from "./CapturePointWrapper";
 
 export class TeamWrapper {
   private readonly STARTING_SCORE = 600;
-  private readonly team: Team;
+  private readonly team: mod.Team;
   private teamScore: number;
   private pointsHeld: CapturePointWrapper[] = [];
   private players: PlayerWrapper[];
-  public isFulcrumHolder: boolean;
+  public isFulcrumHolder: boolean = false;
   public teamId: number;
 
-  constructor(team: Team) {
+  constructor(team: mod.Team) {
     this.team = team;
     this.teamScore = this.STARTING_SCORE;
 
-    this.players = modlib.getPlayersInTeam(team).map(player => new PlayerWrapper(player));
+    this.players = modlib.getPlayersInTeam(team).map((player: mod.Player) => new PlayerWrapper(player));
     this.teamId = modlib.getTeamId(team);
     const startingScore = this.STARTING_SCORE + this.players.length;
     mod.SetGameModeScore(team, startingScore);
@@ -29,7 +27,7 @@ export class TeamWrapper {
     mod.SetGameModeScore(this.team, this.teamScore);
   }
 
-  public isPlayerOnTeam(player: Player): boolean {
+  public isPlayerOnTeam(player: mod.Player): boolean {
     const playerId = modlib.getPlayerId(player);
     return this.players.some(arg => arg.playerId == playerId);
   }
