@@ -19,4 +19,6 @@ export abstract class Core_AGameMode {
     onAIMoveToSucceeded?(eventPlayer: mod.Player): void
     onAIMoveToFailed?(eventPlayer: mod.Player): void
     ongoingPlayer?(eventPlayer: mod.Player): void
+    onCapturePointCaptured?(eventCapturePoint: mod.CapturePoint): void
+    onCapturePointLost?(eventCapturePoint: mod.CapturePoint): void
 }

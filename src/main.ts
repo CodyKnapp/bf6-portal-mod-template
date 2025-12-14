@@ -70,3 +70,11 @@ export function OnAIMoveToFailed(eventPlayer: mod.Player) {
 export async function OngoingPlayer(eventPlayer: mod.Player) {
     gameMode.ongoingPlayer?.(eventPlayer)
 }
+
+export async function OnCapturePointCaptured(eventCapturePoint: mod.CapturePoint) {
+    gameMode.onCapturePointCaptured?.(eventCapturePoint)
+}
+
+export async function OnCapturePointLost(eventCapturePoint: mod.CapturePoint) {
+    gameMode.onCapturePointLost?.(eventCapturePoint)
+}
