@@ -3,28 +3,37 @@ import * as modlib from 'modlib';
 import CapturePoint = mod.CapturePoint;
 import Team = mod.Team;
 import ScoreboardType = mod.ScoreboardType;
+import { TeamWrapper } from '../../Core/TeamWrapper';
 
 export class FulcrumProtocol extends Core_AGameMode {
-  private readonly STARTING_SCORE = 600;
   private readonly FULCRUM_ID = 601;
-  private capturePoints;
-  private fulcrumPoint;
-  private teams;
+  private capturePoints: CapturePoint[];
+  private fulcrumPoint: CapturePoint;
+  private teams: TeamWrapper[];
 
   onGameModeStarted(): void {
     this.initializeObjectives();
     this.initializeScoreboard();
 
     this.teams = [
-      mod.GetTeam(1),
-      mod.GetTeam(2)
-    ].map(this.initializeTeam);
-
-    mod.SetGameModeScore(mod.GetTeam(1), this.STARTING_SCORE);
-    mod.SetGameModeScore(mod.GetTeam(2), this.STARTING_SCORE);
+      new TeamWrapper(mod.GetTeam(1)),
+      new TeamWrapper(mod.GetTeam(2))
+    ];
   }
 
   onPlayerDeployed(eventPlayer: mod.Player) {
+    const playerTeam = mod.GetTeam(eventPlayer);
+    const fulcrumHolder = mod.GetCurrentOwnerTeam(this.fulcrumPoint);
+    console.log(fulcrumHolder);
+
+    if (fulcrumHolder != null || fulcrumHolder == playerTeam) {
+      return;
+    }
+
+    const amountToDecrease = this.teams.find(team => !team.isPlayerOnTeam(eventPlayer))
+
+    this.teams.find(team => team.isPlayerOnTeam(eventPlayer)).decrease()
+
     // Remove tickets based on fulcrum ownership or not
     // Adjust scoring so no points are scored unless the middle zone is held
     // Each death = tickets - number of zones held
